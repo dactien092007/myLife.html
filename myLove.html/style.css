@@ -1,0 +1,70 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+a{
+    text-decoration: none;
+    color:red;
+}
+
+#red{
+    cod
+}
+
+.heart{
+    margin: 200px auto;
+    color: red;
+    animation: heartbeat 8s infinite;
+}
+
+.huyen{
+    font-size: 30px;
+    text-align: center;
+}
+
+h1{
+    color:red;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-weight: 800;
+}
+
+.button{
+    background-color: red;
+    border: 3px ridge black;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-weight: 800;
+    color: white;
+    font-size: 100px;
+    border-radius: 50%;
+    width: fit-content;
+
+}
+.Click{
+    text-align: center;
+    margin: 350px auto;
+    color:red;
+}
+
+@keyframes heartbeat {
+    0% {
+        transform: scale(1);
+    }
+
+    25% {
+        transform: scale(1.1);
+    }
+
+    40% {
+        transform: scale(1);
+    }
+
+    60% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
