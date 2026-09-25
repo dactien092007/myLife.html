@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyLife Schedule — Roadmap to Nov 28</title>
+    <style>
+        :root {
+            --bg-main: #0f172a;
+            --bg-card: #1e293b;
+            --bg-hover: #334155;
+            --border-color: #475569;
+            --text-main: #ffffff;
+            --text-sub: #cbd5e1;
+            
+            --accent-gym: #ef4444;
+            --accent-ielts: #10b981;
+            --accent-ca3: #3b82f6;
+            --accent-work: #a855f7;
+            --accent-nap: #f59e0b;
+            --accent-study: #06b6d4;
+            --accent-relax: #ec4899;
+            --accent-book: #14b8a6;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            padding: 24px;
+            min-height: 100vh;
+            font-size: 18px; /* Cỡ chữ nền tăng lên */
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        h1 { 
+            font-size: 30px; 
+            color: #38bdf8; 
+            text-transform: uppercase; 
+            letter-spacing: 1px;
+            font-weight: 800;
+        }
+        
+        .subtitle { 
+            font-size: 16px; 
+            color: var(--text-sub); 
+            margin-top: 5px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        button {
+            background: var(--bg-card);
+            color: var(--text-main);
+            border: 2px solid var(--border-color);
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 700;
+            transition: all 0.2s;
+        }
+
+        button:hover, button.active {
+            background: #38bdf8;
+            color: #0f172a;
+            border-color: #38bdf8;
+        }
+
+        input[type="date"] {
+            background: var(--bg-card);
+            color: var(--text-main);
+            border: 2px solid var(--border-color);
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            outline: none;
+        }
+
+        /* View Layouts */
+        .view-panel { display: none; }
+        .view-panel.active-view { display: block; }
+
+        /* Day View Cards */
+        .day-header-title {
+            font-size: 26px;
+            margin-bottom: 20px;
+            color: #fb7185;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .time-block {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-left: 8px solid var(--border-color);
+            border-radius: 10px;
+            padding: 18px 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.1s;
+        }
+
+        .time-block:hover { transform: translateX(4px); }
+
+        .time-label {
+            font-size: 18px;
+            font-weight: 800;
+            color: #94a3b8;
+            width: 180px;
+            flex-shrink: 0;
+        }
+
+        .activity-desc {
+            font-size: 19px;
+            flex-grow: 1;
+            font-weight: 600;
+            line-height: 1.4;
+            padding-right: 15px;
+        }
+
+        .badge {
+            font-size: 14px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            flex-shrink: 0;
+        }
+
+        /* Block colors */
+        .b-gym { border-left-color: var(--accent-gym); }
+        .b-gym .badge { background: rgba(239, 68, 68, 0.25); color: #fca5a5; }
+
+        .b-ielts { border-left-color: var(--accent-ielts); }
+        .b-ielts .badge { background: rgba(16, 185, 129, 0.25); color: #6ee7b7; }
+
+        .b-ca3 { border-left-color: var(--accent-ca3); }
+        .b-ca3 .badge { background: rgba(59, 130, 246, 0.25); color: #93c5fd; }
+
+        .b-work { border-left-color: var(--accent-work); }
+        .b-work .badge { background: rgba(168, 85, 247, 0.25); color: #e9d5ff; }
+
+        .b-nap { border-left-color: var(--accent-nap); }
+        .b-nap .badge { background: rgba(245, 158, 11, 0.25); color: #fde047; }
+
+        .b-study { border-left-color: var(--accent-study); }
+        .b-study .badge { background: rgba(6, 182, 212, 0.25); color: #67e8f9; }
+
+        .b-relax { border-left-color: var(--accent-relax); }
+        .b-relax .badge { background: rgba(236, 72, 153, 0.25); color: #f472b6; }
+
+        .b-book { border-left-color: var(--accent-book); }
+        .b-book .badge { background: rgba(20, 184, 166, 0.25); color: #5eead4; }
+
+        /* Calendar Grid View */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+        }
+
+        .cal-head {
+            text-align: center;
+            font-size: 16px;
+            font-weight: 800;
+            color: #38bdf8;
+            padding: 12px;
+            background: var(--bg-card);
+            border-radius: 6px;
+        }
+
+        .cal-day {
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            min-height: 110px;
+            padding: 10px;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .cal-day:hover { border-color: #38bdf8; }
+        .cal-day.today { border: 3px solid #38bdf8; background: #1e293b; }
+        .cal-day.other-month { opacity: 0.2; }
+
+        .cal-date { font-weight: 800; font-size: 16px; margin-bottom: 2px; }
+        .dot-tag {
+            font-size: 12px;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        @media (max-width: 768px) {
+            .time-block { flex-direction: column; align-items: flex-start; gap: 8px; }
+            .time-label { width: 100%; font-size: 16px; }
+            .activity-desc { font-size: 17px; }
+            .calendar-grid { grid-template-columns: repeat(1, 1fr); }
+            .cal-head { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div>
+            <h1>Mylife Dashboard</h1>
+            <p class="subtitle">Lịch trình kỷ luật hằng ngày (25/09/2026 - 28/11/2026)</p>
+        </div>
+        <div class="controls">
+            <input type="date" id="datePicker" value="2026-09-25" min="2026-09-25" max="2026-11-28">
+            <button class="active" onclick="switchView('day')">Theo Ngày</button>
+            <button onclick="switchView('calendar')">Tháng (Tổng Quan)</button>
+        </div>
+    </header>
+
+    <!-- DAY VIEW -->
+    <div id="dayView" class="view-panel active-view">
+        <div class="day-header-title" id="dayTitle">Thứ Cực Kỳ Kỷ Luật</div>
+        <div class="timeline" id="timelineContainer">
+            <!-- Dynamic Injection -->
+        </div>
+    </div>
+
+    <!-- CALENDAR VIEW -->
+    <div id="calendarView" class="view-panel">
+        <div class="calendar-grid" id="calendarGrid">
+            <!-- Dynamic Calendar Injection -->
+        </div>
+    </div>
+</div>
+
+<script>
+    // Specific Ca 3 irregular dates in Oct & Nov 2026
+    const ca3SpecialDates = [
+        "2026-10-26", "2026-10-27",
+        "2026-11-02", "2026-11-03", "2026-11-09", "2026-11-10",
+        "2026-11-16", "2026-11-17", "2026-11-23", "2026-11-24"
+    ];
+
+    let currentDate = "2026-09-25";
+
+    function isCa3Day(dateStr, dayOfWeek) {
+        if ([3, 4, 6].includes(dayOfWeek)) return true;
+        return ca3SpecialDates.includes(dateStr);
+    }
+
+    function renderDayView(dateStr) {
+        const dateObj = new Date(dateStr);
+        const dayOfWeek = dateObj.getDay();
+        const dayNames = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
+        
+        document.getElementById("dayTitle").innerText = `${dayNames[dayOfWeek]}, Ngày ${dateObj.getDate()}/${dateObj.getMonth() + 1}/${dateObj.getFullYear()}`;
+        
+        const hasCa3 = isCa3Day(dateStr, dayOfWeek);
+        const container = document.getElementById("timelineContainer");
+        container.innerHTML = "";
+
+        // Standard Sleep
+        addBlock(container, "01:00 - 08:30", "Ngủ phục hồi cơ thể & trí óc (7.5 tiếng)", "GIẤC NGỦ", "b-nap");
+        
+        // Wakeup
+        addBlock(container, "08:30 - 09:00", "Thức dậy, vệ sinh cá nhân, uống nước, ăn nhẹ", "KHỞI ĐỘNG", "");
+
+        // Morning Gym (Mon, Wed, Fri)
+        if (dayOfWeek === 1) addBlock(container, "09:00 - 10:00", "TẬP 1: ĐẨY (Ngực - Vai - Tay sau)", "GYM", "b-gym");
+        else if (dayOfWeek === 3) addBlock(container, "09:00 - 10:00", "TẬP 2: KÉO (Lưng - Tay trước)", "GYM", "b-gym");
+        else if (dayOfWeek === 5) addBlock(container, "09:00 - 10:00", "TẬP 3: CHÂN & BỤNG", "GYM", "b-gym");
+
+        // IELTS Sessions (Mon, Wed, Fri, Sun)
+        if (dayOfWeek === 1) addBlock(container, "10:45 - 12:15", "IELTS: READING (90 Phút - Full Test & Dịch)", "IELTS", "b-ielts");
+        else if (dayOfWeek === 3) addBlock(container, "11:00 - 12:00", "IELTS: LISTENING (60 Phút - Test + Chép chính tả)", "IELTS", "b-ielts");
+        else if (dayOfWeek === 5) addBlock(container, "11:00 - 12:30", "IELTS: WRITING (90 Phút - Task 1 & Task 2)", "IELTS", "b-ielts");
+        else if (dayOfWeek === 0) addBlock(container, "10:00 - 11:00", "IELTS: SPEAKING (60 Phút - Luyện theo Forecast)", "IELTS", "b-ielts");
+
+        // Nap
+        addBlock(container, "12:15 - 12:45", "NGỦ TRƯA 30 PHÚT (Reset bộ não cho buổi chiều)", "POWER NAP", "b-nap");
+
+        // Afternoon Schedule: Ca 3 vs Free
+        if (hasCa3) {
+            addBlock(container, "12:45 - 13:00", "Di chuyển nhanh tới trường", "DI CHUYỂN", "");
+            addBlock(container, "13:00 - 15:40", "HỌC CA 3 TRÊN TRƯỜNG", "HỌC CA 3", "b-ca3");
+            addBlock(container, "15:40 - 16:15", "Tan học, di chuyển thong thả sang chỗ làm", "DI CHUYỂN", "");
+        } else {
+            addBlock(container, "13:00 - 14:00", "ÔN BÀI TRÊN TRƯỜNG / CHUẨN BỊ BÀI (1 TIẾNG)", "ÔN BÀI", "b-study");
+            addBlock(container, "14:00 - 16:00", "GIẢI TRÍ / XẢ HƠI HOÀN TOÀN (2 TIẾNG)", "GIẢI TRÍ", "b-relax");
+            addBlock(container, "16:00 - 16:15", "Thay đồ, chuẩn bị tư trang sẵn sàng đi làm", "CHUẨN BỊ", "");
+        }
+
+        // Work Commute & Shift
+        addBlock(container, "16:15 - 17:00", "XUẤT PHÁT ĐẾN CHỖ LÀM (Đi lúc 16:15) • Ăn nhẹ trước ca", "XUẤT PHÁT", "");
+        addBlock(container, "17:00 - 24:00", "CA LÀM VIỆC PART-TIME (17:00 - 24:00)", "LÀM VIỆC", "b-work");
+
+        // Post work Book Reading
+        addBlock(container, "24:15 - 24:45", "Về nhà VSCN + ĐỌC 10 TRANG SÁCH GIẤY TRƯỚC KHI NGỦ", "ĐỌC SÁCH", "b-book");
+    }
+
+    function addBlock(parent, time, desc, tagText, typeClass) {
+        const div = document.createElement("div");
+        div.className = `time-block ${typeClass}`;
+        div.innerHTML = `
+            <div class="time-label">${time}</div>
+            <div class="activity-desc">${desc}</div>
+            ${tagText ? `<div class="badge">${tagText}</div>` : ''}
+        `;
+        parent.appendChild(div);
+    }
+
+    function renderCalendarView() {
+        const grid = document.getElementById("calendarGrid");
+        grid.innerHTML = "";
+
+        const dayHeaders = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
+        dayHeaders.forEach(h => {
+            const div = document.createElement("div");
+            div.className = "cal-head";
+            div.innerText = h;
+            grid.appendChild(div);
+        });
+
+        let start = new Date("2026-09-25");
+        let end = new Date("2026-11-28");
+        
+        for(let i=0; i<start.getDay(); i++) {
+            const empty = document.createElement("div");
+            empty.className = "cal-day other-month";
+            grid.appendChild(empty);
+        }
+
+        for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+            const dateStr = d.toISOString().split("T")[0];
+            const dayOfWeek = d.getDay();
+            const dayCell = document.createElement("div");
+            dayCell.className = `cal-day ${dateStr === currentDate ? 'today' : ''}`;
+            dayCell.onclick = () => {
+                currentDate = dateStr;
+                document.getElementById("datePicker").value = dateStr;
+                switchView('day');
+            };
+
+            let tagsHtml = `<div class="cal-date">${d.getDate()}/${d.getMonth()+1}</div>`;
+
+            if ([1,3,5].includes(dayOfWeek)) {
+                tagsHtml += `<div class="dot-tag" style="background:rgba(239,68,68,0.3);color:#fca5a5;">Gym</div>`;
+            }
+            if ([1,3,5,0].includes(dayOfWeek)) {
+                tagsHtml += `<div class="dot-tag" style="background:rgba(16,185,129,0.3);color:#6ee7b7;">IELTS</div>`;
+            }
+            if (isCa3Day(dateStr, dayOfWeek)) {
+                tagsHtml += `<div class="dot-tag" style="background:rgba(59,130,246,0.3);color:#93c5fd;">Ca 3</div>`;
+            }
+
+            dayCell.innerHTML = tagsHtml;
+            grid.appendChild(dayCell);
+        }
+    }
+
+    function switchView(viewName) {
+        document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active-view'));
+        document.querySelectorAll('.controls button').forEach(b => b.classList.remove('active'));
+
+        if (viewName === 'day') {
+            document.getElementById('dayView').classList.add('active-view');
+            event.target.classList.add('active');
+            renderDayView(currentDate);
+        } else {
+            document.getElementById('calendarView').classList.add('active-view');
+            event.target.classList.add('active');
+            renderCalendarView();
+        }
+    }
+
+    document.getElementById("datePicker").addEventListener("change", (e) => {
+        currentDate = e.target.value;
+        renderDayView(currentDate);
+    });
+
+    renderDayView(currentDate);
+</script>
+
+</body>
+</html>
